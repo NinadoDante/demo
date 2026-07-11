@@ -38,3 +38,4 @@ async def main():
 
 print("开始")
 asyncio.run(main())
+print("结束")
