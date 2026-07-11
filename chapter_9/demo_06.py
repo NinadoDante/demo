@@ -36,4 +36,5 @@ async def main():
     print(f"总耗时: {time.time() - start:.2f} 秒")
     print("各页面大小:", results)
 
+print("开始")
 asyncio.run(main())
