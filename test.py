@@ -60,3 +60,6 @@ print(f"\n===== 第6步：新样本预测 =====")
 print(f"输入样本: {sample[0]}")
 print(f"标准化后: {sample_scaled[0].round(4)}")
 print(f"预测品种: {iris.target_names[prediction[0]]}")
+
+
+s = "sds"
