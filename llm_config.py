@@ -9,7 +9,9 @@ llm = init_chat_model(
     model="Qwen/Qwen3.6-35B-A3B",
     model_provider="openai",
     base_url=os.getenv("SILICONFLOW_BASE_URL"),
-    api_key=os.getenv("SILICONFLOW_API_KEY")
+    api_key=os.getenv("SILICONFLOW_API_KEY"),
+    timeout=60,
+    max_retries=2,
 )
 llm0 = ChatOpenAI(
     model="Qwen/Qwen3.6-35B-A3B",
