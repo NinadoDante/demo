@@ -208,7 +208,7 @@ class SiliconFlowReranker(BaseDocumentCompressor):
 
 reranker = SiliconFlowReranker(
     model="Qwen/Qwen3-Reranker-0.6B",
-    top_n=8,
+    top_n=20,           # 初筛阶段多返回，给后续精排留空间
     score_threshold=0.0,
 )
 
@@ -267,16 +267,18 @@ contexts_store = {}
 def search_knowledge_base(query: str, runtime: ToolRuntime[AgentState]) -> str:
     """搜索《白鹿原》知识库，获取小说情节、人物命运、历史背景等知识。需要查找资料时使用。"""
     # 查询扩展：生成多个检索角度
-    rewrite_prompt = f"""将以下问题改写为3个不同角度的检索查询，用于在小说全文中搜索相关段落，每行一个：
+    rewrite_prompt = f"""将以下问题改写为3个不同角度的检索查询，用于在小说全文中搜索相关段落。
+    改写要求：围绕问题的核心实体和关键事件，覆盖"起因、经过、结局/命运"等不同维度，每行一个查询：
     问题：{query}"""
     rewritten = llm.invoke(rewrite_prompt).content.strip().split("\n")
     queries = [query] + [q.strip() for q in rewritten if q.strip()]
 
-    # 对每个查询分别检索，合并去重
+    # 对每个查询分别检索，合并去重（初筛多取，给重排序更大选择空间）
     all_docs = {}
     for q in queries:
-        for doc in retrieve_docs(q, 8):
+        for doc in retrieve_docs(q, 12):
             all_docs[doc["id"]] = doc
+    # 重排序后保留最相关的 8 条（平衡精度与召回）
     final_docs = cross_encoder_rerank(query, list(all_docs.values()), 8)
     if not final_docs:
         return "未找到相关文档"
@@ -300,8 +302,9 @@ rag_agent = create_agent(
     2. **每个问题最多调用一次工具**，禁止重复调用
     3. **禁止**添加任何你自己的知识、理解或推断
     4. **禁止**扩展、举例或给出建议
-    5. 如果参考文档中没有相关信息，直接回复"根据提供的资料，无法回答此问题"
-    6. 回答要简洁，直接引用原文，不要改写或总结
+    5. 尽最大努力从参考文档中提取与问题相关的信息作答；只有当文档中**完全没有任何相关信息**时，才回复"根据提供的资料，无法回答此问题"
+    6. 回答要**直接、简洁地回应问题本身**，先概括要点，再引用原文关键句作为佐证
+    7. 不要大段照搬原文，而是提炼出与问题直接相关的信息作答
     """,
 )
 
@@ -417,7 +420,7 @@ siliconflow_client = AsyncOpenAI(
 evaluator_llm = llm_factory(
     model="Qwen/Qwen3-8B",   # 可更换为 "deepseek-ai/DeepSeek-V3" 等
     client=siliconflow_client,
-    max_tokens=1024,         # 适当减小避免超时
+    max_tokens=4096,         # 增大 token 上限，避免长 context 评估时输出截断
 )
 
 # Embedding 模型（SiliconFlow 也提供）
@@ -456,7 +459,6 @@ from ragas.metrics.collections import (
     ContextRecall  # 上下文召回
 )
 
-# ... existing code ...
 print(f"========开始评估：input:{user_input}===========")
 
 import asyncio
