@@ -9,6 +9,12 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.documents import Document
 import os
 import dotenv
+import logging
+
+# ===== 时序日志配置 =====
+logging.basicConfig(level=logging.INFO, format="[RAGAS_EVAL] %(message)s", force=True)
+logger = logging.getLogger("ragas_eval")
+
 dotenv.load_dotenv()
 from llm_config import llm
 
@@ -17,6 +23,7 @@ from llm_config import llm
 # 1. 加载并切分《白鹿原》小说
 with open("./docs/白鹿原.md", "r", encoding="utf-8") as f:
     docs = f.read()
+logger.info("[步骤01] 读取 ./docs/白鹿原.md 完成，字符数: %d", len(docs))
 
 # 先用md结构切分
 headers_to_split_on = [
@@ -26,6 +33,7 @@ headers_to_split_on = [
 ]
 markdown_splitter = MarkdownHeaderTextSplitter(headers_to_split_on)
 chunks = markdown_splitter.split_text(docs)
+logger.info("[步骤02] Markdown标题切分完成，得到 %d 个块", len(chunks))
 
 # 创建递归切分器
 recursive_splitter = RecursiveCharacterTextSplitter(
@@ -53,6 +61,7 @@ for doc in chunks:
     content = doc.page_content
     if len(content) > 500:
         sub_docs = recursive_splitter.split_documents([doc])
+        logger.info("[步骤03] 块(len=%d)>500，递归切分为 %d 个子块", len(content), len(sub_docs))
         ds.extend(handle_doc_header(d) for d in sub_docs)
     else:
         ds.append(handle_doc_header(doc))
@@ -70,6 +79,7 @@ embeddings = DashScopeEmbeddings(
 )
 vectorstore = InMemoryVectorStore(embeddings)
 vectorstore.add_documents(ds)
+logger.info("[步骤04] DashScope向量化完成，共索引 %d 个文档切片", len(ds))
 retriever = vectorstore.as_retriever(kw_args={"k": 8})
 
 print(f"知识库已就绪: {len(ds)} 个文档切片")
@@ -96,6 +106,7 @@ def create_bm25_index(metadata_corpus, index_path="./db/my_index2.bm25", k1=1.5,
         retriever.index(corpus_tokens)
         # 保存到本地
         retriever.save(index_path)
+        logger.info("[步骤05] jieba分词 + BM25索引创建并保存至 %s", index_path)
         print(f"索引已保存至: {index_path}")
 
     return retriever
@@ -119,6 +130,7 @@ def bm25_search(query: str, k: int = 3) -> List[Tuple[Dict, float]]:
     # 检索，返回top-k结果，形式为(docs, scores)
     # docs和scores都是二维数组 shape (n_queries, k)
     results, scores = bm25_retriever.retrieve(query_tokens, k=k)
+    logger.info("[步骤10] BM25稀疏检索完成，返回 %d 条结果", results.shape[1])
 
     # 封装结果
     return [(results[0, i], scores[0, i]) for i in range(results.shape[1])]
@@ -137,6 +149,7 @@ def reciprocal_rank_fusion(ranked_lists, k=60):
             rrf_scores[doc_id] = rrf_scores.get(doc_id, 0) + 1.0 / (k + rank)
             results[doc_id] = doc
     sorted_docs = sorted(rrf_scores.items(), key=lambda x: x[1], reverse=True)
+    logger.info("[步骤11] RRF融合完成，共融合 %d 个文档", len(sorted_docs))
     return [results[doc_id] for doc_id, score in sorted_docs]
 
 
@@ -192,6 +205,7 @@ class SiliconFlowReranker(BaseDocumentCompressor):
         )
         response.raise_for_status()
         results = response.json()["results"]
+        logger.info("[步骤12] SiliconFlow Rerank API返回 %d 条重排结果", len(results))
 
         # 按分数排序并过滤阈值
         reranked_docs = []
@@ -247,6 +261,7 @@ def retrieve_docs(query: str, top_k: int):
     """混合检索：稠密 + 稀疏 + RRF + CrossEncoder"""
     # 1. 稠密检索
     vector_results = vectorstore.similarity_search(query, k=top_k)
+    logger.info("[步骤09] 稠密检索完成，返回 %d 条结果", len(vector_results))
     # 2. 稀疏检索 BM25
     bm25_results_list = bm25_search(query, k=top_k)
     if not vector_results or not bm25_results_list:
@@ -255,6 +270,7 @@ def retrieve_docs(query: str, top_k: int):
     vector_rs = [{"id": doc.id, "content": doc.page_content} for doc in vector_results]
     bm25_rs = [doc for doc, _ in bm25_results_list]
     rrf_results = reciprocal_rank_fusion([vector_rs, bm25_rs])
+    logger.info("[步骤11] RRF融合结果: %d 条，准备CrossEncoder重排", len(rrf_results))
     # 4. Cross-Encoder 重排序
     return cross_encoder_rerank(query, rrf_results, top_k)
 
@@ -272,6 +288,7 @@ def search_knowledge_base(query: str, runtime: ToolRuntime[AgentState]) -> str:
     问题：{query}"""
     rewritten = llm.invoke(rewrite_prompt).content.strip().split("\n")
     queries = [query] + [q.strip() for q in rewritten if q.strip()]
+    logger.info("[步骤08] 查询改写完成，原始查询: '%s'，改写后共 %d 个查询", query[:30], len(queries))
 
     # 对每个查询分别检索，合并去重（初筛多取，给重排序更大选择空间）
     all_docs = {}
@@ -280,6 +297,7 @@ def search_knowledge_base(query: str, runtime: ToolRuntime[AgentState]) -> str:
             all_docs[doc["id"]] = doc
     # 重排序后保留最相关的 8 条（平衡精度与召回）
     final_docs = cross_encoder_rerank(query, list(all_docs.values()), 8)
+    logger.info("[步骤12] 最终重排完成，保留 %d 条文档", len(final_docs))
     if not final_docs:
         return "未找到相关文档"
 
@@ -288,6 +306,7 @@ def search_knowledge_base(query: str, runtime: ToolRuntime[AgentState]) -> str:
     cs = contexts_store.get(msg, [])
     cs.extend([doc["content"] for doc in final_docs])
     contexts_store[msg] = list(set(cs))
+    logger.info("[步骤12] 检索上下文已存入contexts_store，共 %d 条", len(contexts_store[msg]))
 
     return "\n\n".join(doc["content"] for doc in final_docs)
 
@@ -339,6 +358,7 @@ def create_dataset():
     if os.path.exists("./experiments/datasets/rag_eval.csv"):
         # 尝试读取本地数据
         dataset.reload()
+        logger.info("[步骤06] 本地评估数据集已加载，共 %d 条", len(dataset))
     # 如果有数据，直接返回，没有则重新生成数据集
     if len(dataset) > 0:
         print(f"加载了 {len(dataset)} 个测试数据集，不再重新生成")
@@ -348,6 +368,7 @@ def create_dataset():
     with open("./docs/ragas_eval_dataset.json", "r", encoding="utf-8") as f:
         eval_data = json.load(f)
 
+    logger.info("[步骤06] 加载评估问题集，共 %d 个问题", len(eval_data))
     print(f"加载了 {len(eval_data)} 个评估问题")
 
     # 3.调用Agent，生成response和context
@@ -360,6 +381,7 @@ def create_dataset():
 
     for i, item in enumerate(eval_data):
         query = item["question"]
+        logger.info("[步骤07] 开始处理第 %d/%d 题: '%s'", i + 1, len(eval_data), query[:40])
 
         try:
             # 调用 Agent —— 内部 search_knowledge_base tool 会将检索结果存入 contexts_store
@@ -368,12 +390,14 @@ def create_dataset():
                 {"configurable": {"thread_id": f"eval-{i}"}, "recursion_limit": 25}
             )
             answer = response["messages"][-1].content
+            logger.info("[步骤13] Agent生成答案完成，答案长度: %d 字符", len(answer))
         except Exception as e:
             print(f"[{i + 1}/{len(eval_data)}] {query[:40]}... ✗ Agent异常: {e}")
             answer = "根据提供的资料，无法回答此问题"
 
         # 从 tool 的 store 中取 context（一次检索，不重复）
         contexts = contexts_store.get(query, [])
+        logger.info("[步骤14] 收集答案与上下文完成，contexts: %d 条，写入Dataset", len(contexts))
 
         # 写入数据集
         dataset.append({
@@ -390,6 +414,7 @@ def create_dataset():
             time.sleep(REQUEST_DELAY)
 
     dataset.save()
+    logger.info("[步骤14] 评估数据集已保存，共 %d 个样本", len(eval_data))
     print(f"\n评估数据集已保存: {len(eval_data)} 个样本 -> ./experiments/rag_eval/")
     return dataset
 
@@ -415,6 +440,7 @@ siliconflow_client = AsyncOpenAI(
     http_client=http_client,
     max_retries=3,
 )
+logger.info("[步骤15] SiliconFlow AsyncOpenAI评估客户端创建完成")
 
 # 推理模型（SiliconFlow 支持的模型）
 evaluator_llm = llm_factory(
@@ -428,6 +454,7 @@ evaluator_embeddings = embedding_factory(
     model="Qwen/Qwen3-Embedding-0.6B",  # 或其他 SiliconFlow 上的 embedding 模型
     client=siliconflow_client,
 )
+logger.info("[步骤16] 评估器初始化完成: LLM(Qwen3-8B) + Embedding(Qwen3-Embedding-0.6B)")
 
 print("评估器已配置完成（使用 SiliconFlow）")
 
@@ -448,6 +475,7 @@ if isinstance(retrieved_contexts, str):
     except (ValueError, SyntaxError):
         retrieved_contexts = [retrieved_contexts]
 print(f"retrieved_contexts 类型: {type(retrieved_contexts)}, 长度: {len(retrieved_contexts)}")
+logger.info("[步骤16] 评估样本准备完成: user_input='%s', contexts=%d条", user_input[:30], len(retrieved_contexts))
 
 # 6个核心指标（从 collections 导入）
 from ragas.metrics.collections import (
@@ -465,6 +493,7 @@ import asyncio
 
 async def run_evaluation():
     results = {}
+    logger.info("[步骤17] 开始评估，user_input: '%s'", user_input[:40])
 
     # ---- 检索阶段指标 ----
     print("[1/6] 正在评估 ContextPrecision（等待 SiliconFlow 响应）...")
@@ -476,6 +505,7 @@ async def run_evaluation():
             retrieved_contexts=retrieved_contexts,
         )
         results["ContextPrecision"] = cp_result
+        logger.info("[步骤17] ContextPrecision评估完成，score=%.4f，进度1/6", float(cp_result))
         print(f"运行完成context precision评估,score: {cp_result},进度1/6\n")
     except Exception as e:
         print(f"[1/6] ContextPrecision 评估失败: {e}\n")
@@ -489,6 +519,7 @@ async def run_evaluation():
             retrieved_contexts=retrieved_contexts,
         )
         results["ContextRecall"] = cr_result
+        logger.info("[步骤18] ContextRecall评估完成，score=%.4f，进度2/6", float(cr_result))
         print(f"运行完成context recall评估,score: {cr_result},进度2/6\n")
     except Exception as e:
         print(f"[2/6] ContextRecall 评估失败: {e}\n")
@@ -501,6 +532,7 @@ async def run_evaluation():
             retrieved_contexts=retrieved_contexts,
         )
         results["ContextEntityRecall"] = cer_result
+        logger.info("[步骤19] ContextEntityRecall评估完成，score=%.4f，进度3/6", float(cer_result))
         print(f"运行完成ContextEntityRecall评估,score: {cer_result},进度3/6\n")
     except Exception as e:
         print(f"[3/6] ContextEntityRecall 评估失败: {e}\n")
@@ -515,6 +547,7 @@ async def run_evaluation():
             retrieved_contexts=retrieved_contexts,
         )
         results["Faithfulness"] = faith_result
+        logger.info("[步骤20] Faithfulness评估完成，score=%.4f，进度4/6", float(faith_result))
         print(f"运行完成Faithfulness评估,score: {faith_result},进度4/6\n")
     except Exception as e:
         print(f"[4/6] Faithfulness 评估失败: {e}\n")
@@ -527,6 +560,7 @@ async def run_evaluation():
             response=response,
         )
         results["AnswerRelevancy"] = ar_result
+        logger.info("[步骤21] AnswerRelevancy评估完成，score=%.4f，进度5/6", float(ar_result))
         print(f"运行完成AnswerRelevancy评估,score: {ar_result},进度5/6\n")
     except Exception as e:
         print(f"[5/6] AnswerRelevancy 评估失败: {e}\n")
@@ -541,11 +575,13 @@ async def run_evaluation():
             retrieved_contexts=retrieved_contexts,
         )
         results["NoiseSensitivity"] = ns_result
+        logger.info("[步骤22] NoiseSensitivity评估完成，score=%.4f，进度6/6", float(ns_result))
         print(f"运行完成NoiseSensitivity评估,score: {ns_result},进度6/6\n")
     except Exception as e:
         print(f"[6/6] NoiseSensitivity 评估失败: {e}\n")
 
     # ---- 汇总 ----
+    logger.info("[步骤22] 全部评估完成，成功 %d/6 项", len(results))
     print("=" * 50)
     print("评估结果汇总：")
     for name, score in results.items():

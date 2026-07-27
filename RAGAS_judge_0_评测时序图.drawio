@@ -1,0 +1,368 @@
+<mxfile host="Electron">
+  <diagram id="seq1" name="RAGAS评测时序图">
+    <mxGraphModel dx="1264" dy="922" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1600" pageHeight="1500" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="p1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=11;" value="主脚本(Main)" vertex="1">
+          <mxGeometry height="40" width="120" x="20" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="p2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=11;" value="文件系统(FileSystem)" vertex="1">
+          <mxGeometry height="40" width="120" x="180" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="p3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=11;" value="文本切分器(TextSplitter)" vertex="1">
+          <mxGeometry height="40" width="120" x="340" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="sep3" parent="1" style="shape=mxgraph.sysml.package;labelX=100;align=left;spacingLeft=5;verticalAlign=top;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=12;fontStyle=1;" value="阶段三：评估器配置" vertex="1">
+          <mxGeometry height="28" width="1400" x="20" y="1000" as="geometry" />
+        </mxCell>
+        <mxCell id="p4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=11;" value="向量库(VectorStore)" vertex="1">
+          <mxGeometry height="40" width="120" x="500" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="p5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=11;" value="BM25索引(BM25Index)" vertex="1">
+          <mxGeometry height="40" width="120" x="660" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="p6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;fontSize=11;" value="重排器(Reranker)" vertex="1">
+          <mxGeometry height="40" width="120" x="820" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="p7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=11;" value="大模型(LLM)" vertex="1">
+          <mxGeometry height="40" width="120" x="980" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="p8" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=11;" value="RAG Agent" vertex="1">
+          <mxGeometry height="40" width="120" x="1140" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="p9" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=11;" value="评估API(SiliconFlow)" vertex="1">
+          <mxGeometry height="40" width="120" x="1300" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="l1" edge="1" parent="1" style="endArrow=none;dashed=1;html=1;strokeColor=#999999;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="80" y="60" as="sourcePoint" />
+            <mxPoint x="80" y="1570" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l2" edge="1" parent="1" style="endArrow=none;dashed=1;html=1;strokeColor=#999999;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="240" y="60" as="sourcePoint" />
+            <mxPoint x="240" y="1570" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l3" edge="1" parent="1" style="endArrow=none;dashed=1;html=1;strokeColor=#999999;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="400" y="60" as="sourcePoint" />
+            <mxPoint x="400" y="1570" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l4" edge="1" parent="1" style="endArrow=none;dashed=1;html=1;strokeColor=#999999;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="560" y="60" as="sourcePoint" />
+            <mxPoint x="560" y="1570" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l5" edge="1" parent="1" style="endArrow=none;dashed=1;html=1;strokeColor=#999999;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="720" y="60" as="sourcePoint" />
+            <mxPoint x="720" y="1570" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l6" edge="1" parent="1" style="endArrow=none;dashed=1;html=1;strokeColor=#999999;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="880" y="60" as="sourcePoint" />
+            <mxPoint x="880" y="1570" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l7" edge="1" parent="1" style="endArrow=none;dashed=1;html=1;strokeColor=#999999;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1040" y="60" as="sourcePoint" />
+            <mxPoint x="1040" y="1570" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l8" edge="1" parent="1" style="endArrow=none;dashed=1;html=1;strokeColor=#999999;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1200" y="60" as="sourcePoint" />
+            <mxPoint x="1200" y="1570" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l9" edge="1" parent="1" style="endArrow=none;dashed=1;html=1;strokeColor=#999999;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1360" y="60" as="sourcePoint" />
+            <mxPoint x="1360" y="1570" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sep1" parent="1" style="shape=mxgraph.sysml.package;labelX=100;align=left;spacingLeft=5;verticalAlign=top;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=12;fontStyle=1;" value="阶段一：知识库初始化" vertex="1">
+          <mxGeometry height="28" width="1400" x="20" y="75" as="geometry" />
+        </mxCell>
+        <mxCell id="m01" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;fontSize=10;" value="[01] 读取 白鹿原.md 全文">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="80" y="120" as="sourcePoint" />
+            <mxPoint x="240" y="120" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r01" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;fontSize=10;" value="返回原始文本">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="240" y="155" as="sourcePoint" />
+            <mxPoint x="80" y="155" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m02" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;fontSize=10;" value="[02] MarkdownHeaderTextSplitter 按标题切分">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="80" y="190" as="sourcePoint" />
+            <mxPoint x="400" y="190" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r02" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;fontSize=10;" value="返回标题块列表(chunks)">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="400" y="225" as="sourcePoint" />
+            <mxPoint x="80" y="225" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m03" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;fontSize=10;" value="[03] 块&gt;500字 RecursiveCharacterTextSplitter 二次切分">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="80" y="260" as="sourcePoint" />
+            <mxPoint x="400" y="260" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r03" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;fontSize=10;" value="返回文档切片列表(ds)">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="400" y="295" as="sourcePoint" />
+            <mxPoint x="80" y="295" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m04" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;fontSize=10;" value="[04] DashScope Embedding 向量化 + 写入 InMemoryVectorStore">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="80" y="330" as="sourcePoint" />
+            <mxPoint x="560" y="330" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r04" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;fontSize=10;" value="向量索引构建完成">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="560" y="365" as="sourcePoint" />
+            <mxPoint x="80" y="365" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m05" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;fontSize=10;" value="[05] jieba 分词 + 创建/加载 BM25 稀疏索引">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="80" y="400" as="sourcePoint" />
+            <mxPoint x="720" y="400" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r05" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;fontSize=10;" value="BM25 检索器就绪">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="720" y="435" as="sourcePoint" />
+            <mxPoint x="80" y="435" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sep2" parent="1" style="shape=mxgraph.sysml.package;labelX=100;align=left;spacingLeft=5;verticalAlign=top;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=12;fontStyle=1;" value="阶段二：评估数据集构建（循环 N 题）" vertex="1">
+          <mxGeometry height="28" width="1400" x="20" y="460" as="geometry" />
+        </mxCell>
+        <mxCell id="m06" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;fontSize=10;" value="[06] 读取 ragas_eval_dataset.json 评估问题集">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="80" y="505" as="sourcePoint" />
+            <mxPoint x="240" y="505" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r06" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;fontSize=10;" value="返回评估问题列表">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="240" y="540" as="sourcePoint" />
+            <mxPoint x="80" y="540" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="loop1" parent="1" style="shape=umlFrame;whiteSpace=wrap;html=1;width=120;height=20;boundedLbl=1;verticalAlign=top;align=left;spacingLeft=5;fontSize=11;fontStyle=1;fillColor=none;strokeColor=#0000FF;" value="loop [每道评估题]" vertex="1">
+          <mxGeometry height="420" width="1360" x="40" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="m07" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;fontSize=10;" value="[07] rag_agent.invoke(问题)">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="80" y="600" as="sourcePoint" />
+            <mxPoint x="1200" y="600" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m08" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;fontSize=10;" value="[08] 查询改写：生成3个检索查询">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1200" y="635" as="sourcePoint" />
+            <mxPoint x="1040" y="635" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r08" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;fontSize=10;" value="返回改写查询列表">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1040" y="668" as="sourcePoint" />
+            <mxPoint x="1200" y="668" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m09" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;fontSize=10;" value="[09] 稠密检索 similarity_search(k=12)">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1200" y="700" as="sourcePoint" />
+            <mxPoint x="560" y="700" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r09" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;fontSize=10;" value="返回 Top-K 向量结果">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="560" y="733" as="sourcePoint" />
+            <mxPoint x="1200" y="733" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m10" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;fontSize=10;" value="[10] BM25 稀疏检索(k=12)">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1200" y="765" as="sourcePoint" />
+            <mxPoint x="720" y="765" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r10" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;fontSize=10;" value="返回 Top-K 稀疏结果">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="720" y="798" as="sourcePoint" />
+            <mxPoint x="1200" y="798" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m11" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;fontSize=10;" value="[11] RRF 融合两路检索结果">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1260" y="830" />
+              <mxPoint x="1260" y="855" />
+              <mxPoint x="1200" y="855" />
+            </Array>
+            <mxPoint x="1200" y="830" as="sourcePoint" />
+            <mxPoint x="1260" y="830" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m12" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;fontSize=10;" value="[12] CrossEncoder 重排序(SiliconFlow Rerank API)">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1200" y="880" as="sourcePoint" />
+            <mxPoint x="880" y="880" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r12" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;fontSize=10;" value="返回精排文档列表">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="880" y="913" as="sourcePoint" />
+            <mxPoint x="1200" y="913" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m13" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;fontSize=10;" value="[13] 基于精排文档生成最终答案">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1200" y="945" as="sourcePoint" />
+            <mxPoint x="1040" y="945" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r13" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;fontSize=10;" value="返回答案文本">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1040" y="978" as="sourcePoint" />
+            <mxPoint x="1200" y="978" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m14" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;fontSize=10;" value="[14] 将 answer/contexts/reference 写入 Dataset">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="140" y="1042" />
+              <mxPoint x="140" y="1067" />
+              <mxPoint x="80" y="1067" />
+            </Array>
+            <mxPoint x="80" y="1042" as="sourcePoint" />
+            <mxPoint x="140" y="1042" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r07" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;fontSize=10;" value="返回 answer + contexts">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1200" y="1010" as="sourcePoint" />
+            <mxPoint x="80" y="1010" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m15" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;fontSize=10;" value="[15] 创建 AsyncOpenAI 客户端(SiliconFlow)">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="80" y="1045" as="sourcePoint" />
+            <mxPoint x="1360" y="1045" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r15" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;fontSize=10;" value="客户端就绪">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1360" y="1078" as="sourcePoint" />
+            <mxPoint x="80" y="1078" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m16" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;fontSize=10;" value="[16] llm_factory + embedding_factory 初始化评估器">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="80" y="1110" as="sourcePoint" />
+            <mxPoint x="1360" y="1110" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r16" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;fontSize=10;" value="评估器就绪">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1360" y="1143" as="sourcePoint" />
+            <mxPoint x="80" y="1143" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sep4" parent="1" style="shape=mxgraph.sysml.package;labelX=100;align=left;spacingLeft=5;verticalAlign=top;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=12;fontStyle=1;" value="阶段四：RAGAS 六项指标评估" vertex="1">
+          <mxGeometry height="28" width="1400" x="20" y="1165" as="geometry" />
+        </mxCell>
+        <mxCell id="m17" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;fontSize=10;" value="[17] ContextPrecision.ascore()">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="80" y="1210" as="sourcePoint" />
+            <mxPoint x="1360" y="1210" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r17" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;fontSize=10;" value="返回 ContextPrecision score">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1360" y="1240" as="sourcePoint" />
+            <mxPoint x="80" y="1240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m18" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;fontSize=10;" value="[18] ContextRecall.ascore()">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="80" y="1270" as="sourcePoint" />
+            <mxPoint x="1360" y="1270" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r18" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;fontSize=10;" value="返回 ContextRecall score">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1360" y="1300" as="sourcePoint" />
+            <mxPoint x="80" y="1300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m19" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;fontSize=10;" value="[19] ContextEntityRecall.ascore()">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="80" y="1330" as="sourcePoint" />
+            <mxPoint x="1360" y="1330" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r19" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;fontSize=10;" value="返回 ContextEntityRecall score">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1360" y="1360" as="sourcePoint" />
+            <mxPoint x="80" y="1360" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m20" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;fontSize=10;" value="[20] Faithfulness.ascore()">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="80" y="1390" as="sourcePoint" />
+            <mxPoint x="1360" y="1390" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r20" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;fontSize=10;" value="返回 Faithfulness score">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1360" y="1420" as="sourcePoint" />
+            <mxPoint x="80" y="1420" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m21" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;fontSize=10;" value="[21] AnswerRelevancy.ascore()">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="80" y="1450" as="sourcePoint" />
+            <mxPoint x="1360" y="1450" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r21" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;fontSize=10;" value="返回 AnswerRelevancy score">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1360" y="1480" as="sourcePoint" />
+            <mxPoint x="80" y="1480" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m22" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;fontSize=10;" value="[22] NoiseSensitivity.ascore()">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="80" y="1510" as="sourcePoint" />
+            <mxPoint x="1360" y="1510" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r22" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;fontSize=10;" value="返回 NoiseSensitivity score">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1360" y="1540" as="sourcePoint" />
+            <mxPoint x="80" y="1540" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
